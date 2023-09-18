@@ -13,7 +13,7 @@
         <div class="main">
      
       <div class="question-title">
-        クイズタイトル：〇〇について
+        クイズ! 
       </div>
       <div class="border-hedder"></div>
 
