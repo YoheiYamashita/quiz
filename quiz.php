@@ -35,11 +35,43 @@ if (isset($_POST['num_correct'])) {
 }
 ?>
 
+<!-- IDをランダムにする。使用したIDは、arrayに入れる。arrayにあるIDと一致した（既出のID）場合は、再度ランダムにする。 -->
+<?php 
+$allId=$quiz->getAllId();
 
-<!-- dbのデータを$resultに入れる -->
-<?php
-// $timesを引数にすると、4問目以上は表示されない。乱数にすればよい？ただし、IDの最大数以下で
-$result = $quiz->getById($times);
+// $idValueArrayに、idの値を入れていく
+$idValueArray=[];
+foreach ($allId as $idArray) {
+    
+    foreach ($idArray as $key => $value) {
+        if ($key === 'id') {
+            
+            array_push($idValueArray,$value);
+        }
+    }
+}
+
+
+// session変数に、ランダムなidを入れていく
+session_start();
+
+if(!isset($_SESSION['idArray'])){
+// session変数のidarrayが空の場合、つまりは1問目の場合
+    shuffle($idValueArray);
+    $id1=array_shift($idValueArray);
+    $_SESSION['idArray']=$idValueArray;
+    $_SESSION['id1']=$id1;
+}else{
+    $reducedIdArray=[];
+    shuffle($_SESSION['idArray']);
+    $reducedIdArray=$_SESSION['idArray'];
+    $id1=array_shift($reducedIdArray);
+    $_SESSION['idArray']=$reducedIdArray;
+    $_SESSION['id1']=$id1;
+
+}
+
+$result = $quiz->getById($id1);
 ?>
 
 <!DOCTYPE html>
@@ -49,34 +81,34 @@ $result = $quiz->getById($times);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
-    <link rel="stylesheet" type="text/css" href="quiz.css">
+    <link rel="stylesheet" type="text/css" href="./views/css/quiz.css?<?php echo date('Ymd-Hi'); ?>">
 </head>
 
 
 <body>
     <div class="main">
 
-        <!-- <?php var_dump($quiz) ?> -->
+        <div class="title">クイズに挑戦してください!</div>
 
         <div class="question-title">第<?php echo $times ?>問</div>
 
         <div class="border-hedder"></div>
 
         <div class="question-instruction">
-        <?php echo $result['question'] ?>
-</div>
+            <?php echo $result['question'] ?>
+        </div>
         <form class="form" action="quiz_result.php" method="post">
 
             <?php $res_num = 1;
 
             while ($res_num < 4) { ?>
-                <div class="question-box-<?php echo $res_num?>">
-                    <div class="question-number<?php echo $res_num?>"><?php echo $res_num ?></div>
+                <div class="question-box-<?php echo $res_num ?>">
+                    <div class="question-number<?php echo $res_num ?>"><?php echo $res_num ?></div>
                     <div class="question-text"><?php echo $result['response_' . $res_num]; ?>
-                        <input type="radio" name="response" id="check-<?php echo  $res_num; ?>" value="<?php echo $res_num; ?>" checked><label for="check-<?php echo $res_num?>"></label>
+                        <input type="radio" name="response" id="check-<?php echo  $res_num; ?>" value="<?php echo $res_num; ?>" checked><label for="check-<?php echo $res_num ?>"></label>
 
-                        <div class="question-image"><img src="<?php echo $result['response_pic_' . $res_num]; ?>" alt="logo"></div>
                     </div>
+                    <div class="question-image"><img src="<?php echo $result['response_pic_' . $res_num]; ?>" alt="画像がありません"></div>
 
                 </div>
 
@@ -88,7 +120,7 @@ $result = $quiz->getById($times);
 
             <input type="hidden" name="times" value=<?php echo $times; ?>>
             <input type="hidden" name="num_correct" value=<?php echo $num_correct; ?>>
-            <input id="send_button" type="submit" value="決定する">
+            <input id="send_button" type="submit" value="決定する" class="send_button">
         </form>
 
 

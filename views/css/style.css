@@ -1,0 +1,70 @@
+body {
+  font-family: "Montserrat", "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+  background-color: #ffffff;
+  width: 80%;
+  margin: auto;
+}
+
+.create-par {
+  text-align: right;
+  margin: 0 auto;
+  width: 80%;
+}
+.create {
+  background-color: #f8f6f58f;
+  display: inline-block;
+  border: solid #807cb3 1pt;
+  border-radius: 5pt;
+  padding: 5px;
+}
+.create a {
+  text-decoration: none;
+
+}
+.main {
+  width: 80%;
+  height: auto;
+  margin: 100px auto;
+  background-color: #ffffff;
+  border: groove #cccccc;
+}
+.site-logo img {
+  height: 100px;
+}
+.question-title {
+  display: flex;
+  margin: 10px 10px 10px 10px;
+  font-size: 150%;
+  font-weight: bold;
+}
+.border-hedder {
+  width: 100%;
+  height: 3px;
+  margin-top: -10px;
+  background-color: #00ced1;
+}
+.question-instruction {
+  margin-top: 50px;
+  margin-left: 20px;
+  font-size: 120%;
+  font-weight: bold;
+}
+
+.start-button{
+  display: flex;
+  justify-content: center;
+  align-items: left;
+  margin: 20px;
+}
+.start-button img {
+  width: 200px;
+  /* align-items: center; */
+  margin: 0 auto;
+}
+
+.start-button a{
+  width: 200px;
+  height: 113px;
+
+}

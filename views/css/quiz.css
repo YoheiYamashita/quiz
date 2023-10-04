@@ -1,14 +1,21 @@
-/* body {
+body {
   font-family: "Montserrat", "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3",
     "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
   background-color: #ffffff;
   width: 80%;
-  margin-left: 10%;
-} */
+  margin: auto;
+}
 
+.title{
+  margin: 10px 0 10px 10px;
+  font-size: 200%;
+  width: auto;
+  color: rgb(6, 6, 6);
+  font-weight: bold;
+}
 .true {
-  position: absolute;
-  margin: 30px 0 0 500px;
+
+  margin: 10px 0 10px 10px;
   font-size: 200%;
   width: 200px;
   color: red;
@@ -16,8 +23,8 @@
 }
 
 .false {
-  position: absolute;
-  margin: 30px 0 0 500px;
+
+  margin: 10px 0 10px 10px;
   font-size: 200%;
   width: 200px;
   color: blue;
@@ -25,19 +32,23 @@
 }
 
 .main {
-  width: 600px;
-  height: 400px;
-  margin: 100px 0 0 10%;
+  width: 80%;
+  height: auto;
+  padding-bottom: 20px;
+  margin: 100px auto;
   background-color: #ffffff;
   border: groove #cccccc;
 }
 
+.result{
+  margin :10px 10px 10px 10px;
+}
 .site-logo img {
   height: 100px;
 }
 .question-title {
-  position: absolute;
-  margin: -70px 0 0 200px;
+  display: flex;
+  margin: 10px 10px 10px 10px;
   font-size: 150%;
   font-weight: bold;
 }
@@ -50,8 +61,8 @@
 
 .question-instruction {
   margin-top: 50px;
-  margin-left: 150px;
-  font-size: 150%;
+  margin-left: 20px;
+  font-size: 120%;
   font-weight: bold;
 }
 
@@ -62,12 +73,17 @@
 }
 
 .question-box {
-  margin: 10px 0 0 5%;
-}
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  margin: 0 10px 0 10px;
+  background-color: #e0ffff;}
 .question-text {
-  position: absolute;
   font-size: 110%;
-  margin: -30px 0 0 35px;
+  /* margin: -30px 0 20px 35px; */
+  /* overflow-wrap: break-word; */
+height: 55px;
+width: 150px;
 }
 .question-image {
   max-width: 150px;
@@ -87,14 +103,15 @@
 .question-box-1 {
   display: inline-block;
   width: 150px;
-  height: 150px;
+  height: auto;
   margin: 0 10px 0 10px;
   background-color: #e0ffff;
+  overflow-wrap: break-word;
 }
 .question_box_1_white {
   display: inline-block;
   width: 150px;
-  height: 150px;
+  height: auto;
   margin: 0 10px 0 10px;
   background-color: #e0ffff;
   opacity: 0.3;
@@ -108,14 +125,16 @@
 .question-box-2 {
   display: inline-block;
   width: 150px;
-  height: 150px;
+  height: auto;
   margin: 0 10px 0 10px;
   background-color: #fffacd;
+  overflow-wrap: break-word;
+
 }
 .question_box_2_white {
   display: inline-block;
   width: 150px;
-  height: 150px;
+  height: auto;
   margin: 0 10px 0 10px;
   background-color: #fffacd;
   opacity: 0.3;
@@ -130,14 +149,14 @@
 .question-box-3 {
   display: inline-block;
   width: 150px;
-  height: 150px;
+  height: auto;
   margin: 0 10px 0 10px;
   background-color: #ffc0cb;
 }
 .question_box_3_white {
   display: inline-block;
   width: 150px;
-  height: 150px;
+  height: auto;
   margin: 0 10px 0 10px;
   background-color: #ffc0cb;
   opacity: 0.3;
@@ -147,4 +166,43 @@
   font-size: 150%;
   font-weight: bold;
   margin-left: 5px;
+}
+.q-logo img {
+  /* position: absolute; */
+  width: 40px;
+  margin: -70px 0 0 10px;
+}
+
+.form {
+display: inline;
+}
+
+.send_button{
+display: block;
+margin: 50px 0 0 10px ;
+}
+
+.end-button-wrapper{
+display: flex;
+
+
+  margin: 15px;
+  text-decoration: none;
+  /* text-align: right; */
+  align-items: right;
+  justify-content: center;
+}
+
+.end-button{
+  /* display: flex; */
+
+  padding: 10px;
+  border: solid black 1px;
+  border-radius: 50%;
+  width: auto;
+}
+
+.end-button a{
+  text-decoration: none;
+  font-size: 110%;
 }

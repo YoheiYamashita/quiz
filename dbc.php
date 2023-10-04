@@ -61,7 +61,6 @@ class Dbc
 
 
 
-
     // detai.php用ブログの詳細を取得する。
     // 引数：id
     // 返り値：result
@@ -83,7 +82,7 @@ class Dbc
         $result = $stmt->fetch(\PDO::FETCH_ASSOC); //今回は、一つのデータ（行）だけだから、fetchAllでは無い。
 
         if (!$result) {
-            exit('ブログがありません');
+            exit('クイズがありません');
         }
         return $result;
     }
