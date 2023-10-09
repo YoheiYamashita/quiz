@@ -53,7 +53,7 @@ if ($response == $answer) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Result</title>
-  <link rel="stylesheet" type="text/css" href="./views/css/quiz.css">
+  <link rel="stylesheet" type="text/css" href="./views/css/quiz.css?<?php echo date('Ymd-Hi'); ?>">
 </head>
 
 <body>

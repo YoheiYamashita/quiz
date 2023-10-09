@@ -87,7 +87,7 @@ class Dbc
         return $result;
     }
 
-    public function delete($id)
+    public function deleteDb($id)
     {
         if (empty($id)) {
             exit('IDが不正です');
@@ -101,7 +101,7 @@ class Dbc
         $stmt->bindValue(':id', (int)$id, \PDO::PARAM_INT); //ここでプレイスホルダーにしてる。idが、間接的に代入されている
         // SQL実行
         $stmt->execute();
-        echo 'ブログを削除しました';
+        echo 'クイズを削除しました';
         // return $result;
     }
 }

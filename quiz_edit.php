@@ -71,6 +71,7 @@ $quizData = $quiz->getById($id);
                     <td>
                         <button type="submit">決定</button>
                         <input type="hidden" value="<?php echo $quizData["id"]; ?>" name="id">
+                        
                     </td>
                 </tr>
             </tbody>

@@ -73,9 +73,16 @@ $quizData = $quiz->getAll();
                         </div>
                     </td>
                     <td><?php echo $quiz["correct_answer"]; ?></td>
-                    <form action="quiz_edit.php" method="POST">
-                        <td><button>編集</button><input type="hidden" value="<?php echo $quiz["id"]; ?>" name="id" placeholder="編集"></td>
-                    </form>
+                    <td>
+                        <form action="quiz_edit.php" method="POST">
+                            <button>編集</button><input type="hidden" value="<?php echo $quiz["id"]; ?>" name="id" placeholder="編集">
+                        </form>
+                        <form action="quiz_delete.php" method="POST">
+                        <button>削除</button><input type="hidden" value="<?php echo $quiz["id"]; ?>" name="id" placeholder="削除">
+                        
+                        </form>
+                        </td>
+
                 </tr>
             <?php endforeach ?>
 
