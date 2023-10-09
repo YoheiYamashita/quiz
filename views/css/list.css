@@ -1,0 +1,13 @@
+.list-table{
+    border: solid black;
+}
+
+.quiz-img {
+    width: 150px;
+    height: 120px;
+    overflow: hidden;
+  }
+
+.pic-address{
+word-wrap: break-word;
+max-width: 100%; /* 親要素の幅いっぱいに広げる */  }

@@ -6,71 +6,113 @@ class Quiz extends Dbc
 
     protected $table_name = 'quiz';
 
+    // 画像の保存先ディレクトリ
+    protected $upload_dir = './img/';
 
+    
     public function quizCreate($quizzes)
     {
+        // 画像アップロード処理
 
-        if (isset($quizzes['img_upload'])) {
-           
-            $dir = './img/';
-            
-            for ($i = 1; $i <= 3; $i++) {
-                $temp_file_variable_name = "temp_file_$i";
-                $response_pic_variable_name = "response_pic_$i";
-                $img_path_name="img_path_$i";
-                
-                $$temp_file_variable_name = $_FILES[$response_pic_variable_name]['tmp_name'];
-                
-                if (file_exists($$temp_file_variable_name)) {
-                    $image = uniqid(mt_rand(), false);
-                    switch (@exif_imagetype($$temp_file_variable_name)) {
-                        case IMAGETYPE_GIF:
-                            $image .= '.gif';
-                            break;
-                        case IMAGETYPE_JPEG:
-                            $image .= '.jpg';
-                            break;
-                        case IMAGETYPE_PNG:
-                            $image .= '.png';
-                            break;
-                        default:
-                            echo '拡張子を変更してください';
-                            break;
-                    }
-                    move_uploaded_file($$temp_file_variable_name, $dir . $image);
-                    $$img_path_name = $dir . "/" . $image;
-                   
-            }
-        }
+        $imagePaths = $this->uploadImagesCreate($quizzes);
 
-            // ここから、mySQLに接続していく。
-            $sql =   "INSERT INTO
+        // データベースにクイズを挿入
+        $sql = "INSERT INTO
             $this->table_name(question,response_1,response_2,response_3,response_pic_1,response_pic_2,response_pic_3,correct_answer)
             VALUES
-             (:question,:response_1,:response_2,:response_3,:response_pic_1,:response_pic_2,:response_pic_3,:correct_answer) ";
+            (:question,:response_1,:response_2,:response_3,:response_pic_1,:response_pic_2,:response_pic_3,:correct_answer)";
 
+        $dbh = $this->dbConnect();
 
-            $dbh = $this->dbConnect();
+        $dbh->beginTransaction(); // トランザクション
+        try {
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(':question', $quizzes['question'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_1', $quizzes['response_1'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_2', $quizzes['response_2'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_3', $quizzes['response_3'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_pic_1', $imagePaths[0], PDO::PARAM_STR);
+            $stmt->bindValue(':response_pic_2', $imagePaths[1], PDO::PARAM_STR);
+            $stmt->bindValue(':response_pic_3', $imagePaths[2], PDO::PARAM_STR);
+            $stmt->bindValue(':correct_answer', $quizzes['correct_answer'], PDO::PARAM_STR);
+            $stmt->execute();
+            $dbh->commit();
+            echo 'クイズを作成しました';
+        } catch (PDOException $e) {
+            $dbh->rollBack();
+            exit($e->getMessage());
+        }
+    }
 
-            $dbh->beginTransaction(); //トランザクション。整合性をチェック。この後のcommitとrollbackで実行している。
-            try {
-                $stmt = $dbh->prepare($sql);
-                $stmt->bindValue(':question', $quizzes['question'], PDO::PARAM_STR);
-                $stmt->bindValue(':response_1', $quizzes['response_1'], PDO::PARAM_STR);
-                $stmt->bindValue(':response_2', $quizzes['response_2'], PDO::PARAM_STR);
-                $stmt->bindValue(':response_3', $quizzes['response_3'], PDO::PARAM_STR);
-                $stmt->bindValue(':response_pic_1', $img_path_1, PDO::PARAM_STR);
-                $stmt->bindValue(':response_pic_2', $img_path_2, PDO::PARAM_STR);
-                $stmt->bindValue(':response_pic_3', $img_path_3, PDO::PARAM_STR);
-                $stmt->bindValue(':correct_answer', $quizzes['correct_answer'], PDO::PARAM_STR);
-                $stmt->execute();
-                $dbh->commit();
-                echo 'クイズを作成しました';
-            } catch (PDOException $e) {
-                $dbh->rollBack();
-                exit($e);
+    public function uploadImagesCreate()
+    {
+        for ($i = 1; $i <= 3; $i++) {
+            $responsePicName = "response_pic_$i";
+            $tempFileName = $_FILES[$responsePicName]['tmp_name'];
+            if (file_exists($tempFileName)) {
+                $imagePaths[] = $this->uploadImages();
+            } else {
+                // noimagesのパスをimagePathに入れる
+                $res_pic = "./img/noimage.jpg";
+                $imagePaths[] = $res_pic;
             }
         }
+        return $imagePaths;
+    }
+    public function uploadImagesUpdate()
+    {
+        for ($i = 1; $i <= 3; $i++) {
+            $responsePicName = "response_pic_$i";
+            $tempFileName = $_FILES[$responsePicName]['tmp_name'];
+            if (file_exists($tempFileName)) {
+                $imagePaths[] = $this->uploadImages();
+            } else {
+                // noimagesのパスをimagePathに入れる
+                $picNameText = "response_pic_" . $i . "_text";
+                $imagePaths[] = $_POST[$picNameText];
+            }
+        }
+        return $imagePaths;
+    }
+
+    protected function uploadImages()
+    {
+        for ($i = 1; $i <= 3; $i++) {
+            $responsePicName = "response_pic_$i";
+            $tempFileName = $_FILES[$responsePicName]['tmp_name'];
+
+            if (file_exists($tempFileName)) {
+                $imagePaths = [];
+                $image = uniqid(mt_rand(), false);
+
+                switch (@exif_imagetype($tempFileName)) {
+                    case IMAGETYPE_GIF:
+                        $image .= '.gif';
+                        break;
+                    case IMAGETYPE_JPEG:
+                        $image .= '.jpg';
+                        break;
+                    case IMAGETYPE_PNG:
+                        $image .= '.png';
+                        break;
+                    default:
+                        throw new Exception('サポートされていない画像形式です');
+                }
+
+                $imagePath = $this->upload_dir . $image;
+                move_uploaded_file($tempFileName, $imagePath);
+
+
+                return $imagePath;
+                // もしファイルが存在していなければ、POSTで送られたvalue、すなわち画像ファイルのパスをそのまま代入する。
+
+            } else {
+                $picNameText = "response_pic_" . $i . "_text";
+                $imagePaths[] = $_POST[$picNameText];
+            }
+        }
+
+        return $imagePaths;
     }
 
 
@@ -103,32 +145,38 @@ class Quiz extends Dbc
     {
         // ここから、mySQLに接続していく。
         $sql =   "UPDATE $this->table_name SET
-            title=:title,content=:content,category=:category,publish_status=:publish_status
+            question=:question,response_1=:response_1,response_2=:response_2,response_3=:response_3,response_pic_1=:response_pic_1,response_pic_2=:response_pic_2,response_pic_3=:response_pic_3,response_pic_1=:response_pic_1,correct_answer=:correct_answer
         WHERE
             id=:id ";
 
-
         $dbh = $this->dbConnect();
 
+        $imagePaths = $this->uploadImagesUpdate();
+        
         $dbh->beginTransaction(); //トランザクション。整合性をチェック。この後のcommitとrollbackで実行している。
         try {
             $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(':title', $quizzes['title'], PDO::PARAM_STR);
-            $stmt->bindValue(':content', $quizzes['content'], PDO::PARAM_STR);
-            $stmt->bindValue(':category', $quizzes['category'], PDO::PARAM_INT);
-            $stmt->bindValue(':publish_status', $quizzes['publish_status'], PDO::PARAM_INT);
+            $stmt->bindValue(':question', $quizzes['question'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_1', $quizzes['response_1'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_2', $quizzes['response_2'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_3', $quizzes['response_3'], PDO::PARAM_STR);
+            $stmt->bindValue(':response_pic_1', $imagePaths[0], PDO::PARAM_STR);
+            $stmt->bindValue(':response_pic_2', $imagePaths[1], PDO::PARAM_STR);
+            $stmt->bindValue(':response_pic_3', $imagePaths[2], PDO::PARAM_STR);
+            $stmt->bindValue(':correct_answer', $quizzes['correct_answer'], PDO::PARAM_INT);
             $stmt->bindValue(':id', $quizzes['id'], PDO::PARAM_INT);
             $stmt->execute();
             $dbh->commit();
-            echo 'ブログを更新しました';
+            echo 'クイズを編集しました';
+            echo "<br>";
         } catch (PDOException $e) {
             $dbh->rollBack();
             exit($e);
         }
     }
-    
-    
-    
+
+
+
     public function getAllId()
     {
         $dbh = $this->dbConnect();
@@ -141,6 +189,4 @@ class Quiz extends Dbc
         return $result;
         $dbh = null;
     }
-
 }
-

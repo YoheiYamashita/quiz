@@ -11,7 +11,7 @@
     
     <div class="create-par">
       <div class="create">
-      <a href="quiz_form.php">クイズを新規作成</a>
+      <a href="quiz_admin.php">クイズを管理</a>
     </div>
   </div>
     <div class="main">

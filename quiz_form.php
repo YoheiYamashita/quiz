@@ -16,27 +16,6 @@
     <form action="quiz_create.php" method="POST" enctype="multipart/form-data">
         <p>質問</p>
         <textarea name="question" cols="30" rows="3"></textarea>
-
-        <!-- <p>選択肢を入力し、正解を選択してください</p>
-        <input type="radio" name="correct_answer" value="1">選択肢1
-        <textarea name="response_1" cols="30" rows="1"></textarea>
-        <input type="radio" name="correct_answer" value="2">選択肢2
-        <textarea name="response_2" cols="30" rows="1"></textarea>
-        <input type="radio" name="correct_answer" value="3">選択肢3
-        <textarea name="response_3" cols="30" rows="1"></textarea>
-
-
-
-
-        <div>選択肢1の画像</div>
-        <input type="file" name="response_pic_1">
-        <div>選択肢2の画像</div>
-        <input type="file" name="response_pic_2">
-        <div>選択肢3の画像</div>
-        <input type="file" name="response_pic_3"> -->
-
-
-
         
         <table class="create-table" border="1" style="border-collapse: collapse">
             <thead class="create-head" >
@@ -72,7 +51,7 @@
         </table>
         <br>
         <input type="submit" name="img_upload" value="送信">
-        <p><a href="./index.php">戻る</a></p>
+        <p><a href="./quiz_admin.php">戻る</a></p>
         
     </form>
 </body>
