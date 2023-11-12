@@ -1,4 +1,11 @@
 <?php
+session_start();
+if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    // トークンチェックエラー
+    echo '更新できません'.'<br>';
+    die();
+  }
+  
 require_once('quiz_func.php');
 $quiz = new Quiz();
 $quizzes = $_POST;

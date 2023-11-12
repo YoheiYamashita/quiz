@@ -12,6 +12,10 @@ class Quiz extends Dbc
     // クイズの新規作成
     public function quizCreate($quizzes)
     {
+       
+
+          
+        
         // 画像アップロード処理
         $imagePaths = $this->uploadImages($quizzes);
 
@@ -40,7 +44,9 @@ class Quiz extends Dbc
         } catch (PDOException $e) {
             $dbh->rollBack();
             exit($e->getMessage());
-        }
+        
+    }
+
     }
 
     // 新規作成用の画像アップロード
@@ -108,10 +114,10 @@ class Quiz extends Dbc
     }
 
 
-    // 記事の更新
+    // クイズの更新
     public function quizUpdate($quizzes)
     {
-        // ここから、mySQLに接続していく。
+        // ここから、mySQLに接続
         $sql =   "UPDATE $this->table_name SET
             question=:question,response_1=:response_1,response_2=:response_2,response_3=:response_3,response_pic_1=:response_pic_1,response_pic_2=:response_pic_2,response_pic_3=:response_pic_3,response_pic_1=:response_pic_1,correct_answer=:correct_answer
         WHERE
@@ -121,7 +127,7 @@ class Quiz extends Dbc
 
         $imagePaths = $this->uploadImages();
 
-        $dbh->beginTransaction(); //トランザクション。整合性をチェック。この後のcommitとrollbackで実行している。
+        $dbh->beginTransaction(); //トランザクション。整合性をチェック。この後のcommitもしくはrollbackで実行している。
         try {
             $stmt = $dbh->prepare($sql);
             $stmt->bindValue(':question', $quizzes['question'], PDO::PARAM_STR);

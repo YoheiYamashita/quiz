@@ -1,4 +1,10 @@
 <?php 
+session_start();
+if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    // トークンチェックエラー
+    echo '新規登録できません'.'<br>';
+    die();
+  }
 
 require_once('quiz_func.php');
 
@@ -6,8 +12,8 @@ $quiz=new Quiz();
 
 $quizzes=$_POST;
 
-
-$result=$quiz->quizCreate($quizzes);
+ $result=$quiz->quizCreate($quizzes);
+  
 
 
 

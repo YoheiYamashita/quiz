@@ -4,6 +4,11 @@ $id = $_POST['id'];
 $quiz = new Quiz();
 $quizData = $quiz->getById($id);
 
+session_start();
+$toke_byte = random_bytes(32);
+$csrf_token = bin2hex($toke_byte);
+$_SESSION['csrf_token'] = $csrf_token;
+
 ?>
 
 <!DOCTYPE html>
@@ -31,6 +36,7 @@ $quizData = $quiz->getById($id);
         </div>
 
         <form action="quiz_edit_done.php" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
 
             <table class="left-12 border-collapse border border-slate-400">
                 <thead>

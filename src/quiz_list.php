@@ -4,7 +4,10 @@ $quiz = new Quiz();
 $quizData = $quiz->getAll();
 
 // var_dump($quizData);
-
+session_start();
+$toke_byte = random_bytes(32);
+$csrf_token = bin2hex($toke_byte);
+$_SESSION['csrf_token'] = $csrf_token;
 
 ?>
 
@@ -92,6 +95,7 @@ $quizData = $quiz->getAll();
                             </form>
                             <form action="quiz_delete.php" method="POST">
                                 <button class="rounded-lg bg-red-400 p-2 text-white mt-1 mx-2 inline-block hover:bg-red-500">削除</button><input type="hidden" value="<?php echo $quiz["id"]; ?>" name="id" placeholder="削除">
+                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
 
                             </form>
                         </td>

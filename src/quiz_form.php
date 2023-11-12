@@ -1,3 +1,11 @@
+<?php
+session_start();
+$toke_byte = random_bytes(32);
+$csrf_token = bin2hex($toke_byte);
+$_SESSION['csrf_token'] = $csrf_token;
+
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -23,7 +31,7 @@
 
     <form action="quiz_create.php" method="POST" enctype="multipart/form-data">
 
-
+    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
 
         <div class="flex flex-row justify-center items-center mx-3 my-5 w-full">
             <div class="block w-10">質問</div>
@@ -69,6 +77,8 @@
             <input type="submit" name="img_upload" value="決定" class="cursor-pointer rounded-lg bg-red-400 hover:bg-red-500 p-3 mx-3 h-max text-white">
            
         </div> 
+
+        
     </form>
         </div>
 </body>
