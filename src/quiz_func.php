@@ -1,5 +1,38 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once('dbc.php');
+
+function h($str)
+{
+    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+}
+
+
+function upload($dbh, $sql, $quizzes, $imagePaths, $comment)
+{
+    try {
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':question', h($quizzes['question']), PDO::PARAM_STR);
+        $stmt->bindValue(':response_1', h($quizzes['response_1']), PDO::PARAM_STR);
+        $stmt->bindValue(':response_2', h($quizzes['response_2']), PDO::PARAM_STR);
+        $stmt->bindValue(':response_3', h($quizzes['response_3']), PDO::PARAM_STR);
+        $stmt->bindValue(':response_pic_1', h($imagePaths[0]), PDO::PARAM_STR);
+        $stmt->bindValue(':response_pic_2', h($imagePaths[1]), PDO::PARAM_STR);
+        $stmt->bindValue(':response_pic_3', h($imagePaths[2]), PDO::PARAM_STR);
+        $stmt->bindValue(':correct_answer', h($quizzes['correct_answer']), PDO::PARAM_STR);
+        if (isset($quizzes['id'])) {
+            $stmt->bindValue(':id', h($quizzes['id']), PDO::PARAM_STR);
+        }
+        $stmt->execute();
+        $dbh->commit();
+        return $comment;
+    } catch (PDOException $e) {
+        $dbh->rollBack();
+        exit($e->getMessage());
+    }
+}
 
 class Quiz extends Dbc
 {
@@ -12,10 +45,7 @@ class Quiz extends Dbc
     // クイズの新規作成
     public function quizCreate($quizzes)
     {
-       
 
-          
-        
         // 画像アップロード処理
         $imagePaths = $this->uploadImages($quizzes);
 
@@ -26,27 +56,10 @@ class Quiz extends Dbc
             (:question,:response_1,:response_2,:response_3,:response_pic_1,:response_pic_2,:response_pic_3,:correct_answer)";
 
         $dbh = $this->dbConnect();
-
         $dbh->beginTransaction(); // トランザクション
-        try {
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(':question', $quizzes['question'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_1', $quizzes['response_1'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_2', $quizzes['response_2'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_3', $quizzes['response_3'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_pic_1', $imagePaths[0], PDO::PARAM_STR);
-            $stmt->bindValue(':response_pic_2', $imagePaths[1], PDO::PARAM_STR);
-            $stmt->bindValue(':response_pic_3', $imagePaths[2], PDO::PARAM_STR);
-            $stmt->bindValue(':correct_answer', $quizzes['correct_answer'], PDO::PARAM_STR);
-            $stmt->execute();
-            $dbh->commit();
-            return 'クイズを作成しました';
-        } catch (PDOException $e) {
-            $dbh->rollBack();
-            exit($e->getMessage());
         
-    }
-
+        $comment = 'クイズを新規作成しました';
+        return upload($dbh, $sql, $quizzes, $imagePaths, $comment);
     }
 
     // 新規作成用の画像アップロード
@@ -124,28 +137,12 @@ class Quiz extends Dbc
             id=:id ";
 
         $dbh = $this->dbConnect();
-
         $imagePaths = $this->uploadImages();
-
         $dbh->beginTransaction(); //トランザクション。整合性をチェック。この後のcommitもしくはrollbackで実行している。
-        try {
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(':question', $quizzes['question'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_1', $quizzes['response_1'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_2', $quizzes['response_2'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_3', $quizzes['response_3'], PDO::PARAM_STR);
-            $stmt->bindValue(':response_pic_1', $imagePaths[0], PDO::PARAM_STR);
-            $stmt->bindValue(':response_pic_2', $imagePaths[1], PDO::PARAM_STR);
-            $stmt->bindValue(':response_pic_3', $imagePaths[2], PDO::PARAM_STR);
-            $stmt->bindValue(':correct_answer', $quizzes['correct_answer'], PDO::PARAM_INT);
-            $stmt->bindValue(':id', $quizzes['id'], PDO::PARAM_INT);
-            $stmt->execute();
-            $dbh->commit();
-            return 'クイズの編集が完了しました！';
-        } catch (PDOException $e) {
-            $dbh->rollBack();
-            exit($e);
-        }
+        
+
+        $comment='クイズを更新しました';
+        return upload($dbh, $sql, $quizzes, $imagePaths, $comment);
     }
 
 

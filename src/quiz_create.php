@@ -13,9 +13,6 @@ $quiz=new Quiz();
 $quizzes=$_POST;
 
  $result=$quiz->quizCreate($quizzes);
-  
-
-
 
 ?>
 
